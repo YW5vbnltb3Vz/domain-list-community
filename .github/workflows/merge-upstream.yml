@@ -51,3 +51,9 @@ jobs:
       env:
         DOWNSTREAM_BRANCH: master
       run: git push origin $DOWNSTREAM_BRANCH
+
+    - name: Delete workflow runs
+      uses: Mattraks/delete-workflow-runs@v1.2.2
+      with:
+        retain_days: 0.02
+        keep_minimum_runs: 3
