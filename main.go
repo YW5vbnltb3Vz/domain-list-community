@@ -2,6 +2,8 @@ package main
 
 import (
 	"bufio"
+	"encoding/base64"
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -9,6 +11,7 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"time"
 
 	router "github.com/v2fly/v2ray-core/v5/app/router/routercommon"
 	"google.golang.org/protobuf/proto"
@@ -107,6 +110,64 @@ func writePlainList(exportedName string) error {
 		fmt.Fprintln(w, entry.Plain)
 	}
 	return w.Flush()
+}
+
+func exportGFWList(exportedName string) error {
+	targetList, exist := finalMap[strings.ToUpper(exportedName)]
+	if !exist || len(targetList) == 0 {
+		return fmt.Errorf("'%s' list does not exist or is empty.", exportedName)
+	}
+	var entryBytes []byte
+	timeString := fmt.Sprintf("! Last Modified: %s\n", time.Now())
+	entryBytes = append(entryBytes, []byte("[AutoProxy 0.2.9]\n")...)
+	entryBytes = append(entryBytes, []byte(timeString)...)
+	entryBytes = append(entryBytes, []byte("! Expires: 24h\n")...)
+	entryBytes = append(entryBytes, []byte("! HomePage: https://github.com/YW5vbnltb3Vz/domain-list-community\n")...)
+	entryBytes = append(entryBytes, []byte("! GitHub URL: https://raw.githubusercontent.com/YW5vbnltb3Vz/domain-list-community/release/gfwlist.txt\n")...)
+	entryBytes = append(entryBytes, []byte("! jsdelivr URL: https://cdn.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt\n")...)
+	for _, entry := range targetList {
+		exclude := false
+		if len(entry.Attrs) > 0 {
+			// exclude rules that have '@cn' attribute
+			for _, attr := range entry.Attrs {
+				if strings.EqualFold(attr, "cn") {
+					exclude = true
+					break
+				}
+			}
+		}
+		if exclude {
+			fmt.Printf("Exclude '%s' from gfwlist.txt because it has '@cn' attribute\n", entry.Value)
+			continue
+		}
+		switch entry.Type {
+		case "domain":
+			entryBytes = append(entryBytes, []byte("||"+entry.Value+"\n")...)
+		case "full":
+			entryBytes = append(entryBytes, []byte("|http://"+entry.Value+"\n")...)
+			entryBytes = append(entryBytes, []byte("|https://"+entry.Value+"\n")...)
+		case "keyword":
+			entryBytes = append(entryBytes, []byte(entry.Value+"\n")...)
+		case "regexp":
+			entryBytes = append(entryBytes, []byte("/"+entry.Value+"/\n")...)
+		default:
+			return errors.New("unknown domain type: " + entry.Type)
+		}
+	}
+	f, err := os.OpenFile(filepath.Join(*outputDir, "gfwlist.txt"), os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	encoder := base64.NewEncoder(base64.StdEncoding, f)
+	if _, err = encoder.Write(entryBytes); err != nil {
+		return err
+	}
+	fmt.Println("gfwlist.txt has been generated successfully in", *outputDir, "directory.")
+	if err = encoder.Close(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func parseEntry(line string) (Entry, error) {
@@ -389,6 +450,13 @@ func main() {
 				continue
 			}
 			fmt.Printf("list: '%s' has been generated successfully.\n", exportedList)
+		}
+	}
+
+	// Export GfwList
+	if _, exist := finalMap["GEOLOCATION-!CN"]; exist {
+		if err := exportGFWList("GEOLOCATION-!CN"); err != nil {
+			fmt.Println("Failed to export GFW list:", err)
 		}
 	}
 
