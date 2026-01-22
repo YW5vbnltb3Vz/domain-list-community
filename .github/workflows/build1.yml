@@ -3,12 +3,7 @@ on:
   push:
     branches:
       - master
-    paths-ignore:
-      - "**/README.md"
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+  workflow_dispatch:
 
 jobs:
   build:

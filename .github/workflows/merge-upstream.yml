@@ -55,7 +55,7 @@ jobs:
       run: git push https://YW5vbnltb3Vz:${{ secrets.access_token }}@github.com/${{ github.repository }} $DOWNSTREAM_BRANCH
 
     - name: Delete workflow runs
-      uses: Mattraks/delete-workflow-runs@main
+      uses: Mattraks/delete-workflow-runs@v2
       with:
         retain_days: 0
-        keep_minimum_runs: 1
+        keep_minimum_runs: 0
