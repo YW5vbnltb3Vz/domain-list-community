@@ -1,4 +1,3 @@
-include:apple-ads
 include:apple-dev # swift inside
 # Not include:apple-intelligence
 include:apple-pki
@@ -756,6 +755,7 @@ full:amp-api-edge.apps.apple.com @cn
 full:amp-api-search-edge.apps.apple.com @cn
 full:amp-api.apps.apple.com @cn
 full:amp-api.music.apple.com @cn
+full:aod-ssl.itunes.apple.com @cn
 full:aod.itunes.apple.com @cn
 full:api-edge.apps.apple.com @cn
 full:apptrailers.itunes.apple.com @cn
@@ -982,3 +982,10 @@ full:weatherkit.apple.com @cn
 full:www.apple.com @cn
 full:www.apple.com.edgekey.net.globalredir.akadns.net @cn
 full:xp.apple.com @cn
+
+# Ads/tracking
+advertising.apple.com @ads
+api-adservices.apple.com @ads
+iadsdk.apple.com @ads
+iad.apple.com @ads
+qwapi.com @ads

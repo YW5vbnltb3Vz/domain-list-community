@@ -10,10 +10,13 @@ This project is not opinionated. In other words, it does NOT endorse, claim or i
 
 - **dlc.dat**：[https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat](https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat)
 - **dlc.dat.sha256sum**：[https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat.sha256sum](https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat.sha256sum)
+- **dlc.dat_plain.yml**：[https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat_plain.yml](https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat_plain.yml)
+- **dlc.dat_plain.yml.sha256sum**：[https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat_plain.yml.sha256sum](https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat_plain.yml.sha256sum)
 
 ## Notice
 
-Rules with `@!cn` attribute has been cast out from cn lists. `geosite:geolocation-cn@!cn` is no longer available. Check [#390](https://github.com/v2fly/domain-list-community/issues/390), [#3119](https://github.com/v2fly/domain-list-community/pull/3119) and [#3198](https://github.com/v2fly/domain-list-community/pull/3198) for more information.
+- Rules with `@!cn` attribute has been cast out from cn lists. `geosite:geolocation-cn@!cn` is no longer available. Check [#390](https://github.com/v2fly/domain-list-community/issues/390), [#3119](https://github.com/v2fly/domain-list-community/pull/3119) and [#3198](https://github.com/v2fly/domain-list-community/pull/3198) for more information.
+- Dedicated non-category ad lists like `geosite:xxx-ads` has been removed. Use `geosite:xxx@ads` instead. `geosite:category-ads[-xx]` is not affected.
 
 Please report if you have any problems or questions.
 
@@ -139,7 +142,7 @@ Theoretically any string can be used as the name, as long as it is a valid file 
 
 ### Attributes
 
-Attribute is useful for sub-group of domains, especially for filtering purpose. For example, the list of `google` domains may contains its main domains, as well as domains that serve ads. The ads domains may be marked by attribute `@ads`, and can be used as `geosite:google@ads` in V2Ray routing.
+Attribute is useful for sub-group of domains, especially for filtering purpose. For example, the list of `google` may contains its main domains, as well as domains that serve ads. The ads domains may be marked by attribute `@ads`, and can be used as `geosite:google@ads` in V2Ray routing. Domains and services that originate from outside China mainland but have access point in China mainland, may be marked by attribute `@cn`.
 
 ## Contribution guideline
 
